@@ -71,6 +71,45 @@ app.post('/webhook',(req,res)=>{
 // }
 
 //writing a new sendMessage function
+function sendMessage(event){
+	let sender = event.sender.id;
+	let text = event.message.text;
+	console.log('Send message is fired!');
+	// if (!sessionId.has(sender)) {
+	// 	sessionId.set(sender, uuid.v1());
+	// }
+	let apiai= apiaiApp.textRequest(text,{
+		sessionID:"dev_app21"
+	});
+	apiai.on('response',(response)=>{
+		//logic for getting a response from dialogflow
+		console.log(response.result);
+		let aitext = response.result.fulfillment.speech;
+
+		request({
+	      url: 'https://graph.facebook.com/v2.6/me/messages',
+	      qs: {access_token: PAGE_ACCESS_TOKEN},
+	      method: 'POST',
+	      json: {
+	        recipient: {id: sender},
+	        message: {text: aiText}
+	      }
+	    }, (error, response) => {
+	      if (error) {
+	          console.log('Error sending message: ', error);
+	      } else if (response.body.error) {
+	          console.log('Error: ', response.body.error);
+	      }
+	    });
+
+
+	});
+
+	apiai.on('error',(error)=>{
+		console.log(error);
+	});
+	apiai.end();
+}
 
 
 
