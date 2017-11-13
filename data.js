@@ -1,4 +1,4 @@
-const city{
+module.exports={
 	kolkata:{'id':186924858495604, 'link':'https://www.facebook.com/groups/DevCKolkata/'},
 	dhaka:{'id':811281355669013, 'link':'https://www.facebook.com/groups/DevCDhaka/'},
 	kathmandu:{'id':1741843536047014, 'link':'https://www.facebook.com/groups/DevCKathmandu/'},
