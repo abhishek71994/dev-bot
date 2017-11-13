@@ -69,7 +69,7 @@ function sendMessage(event){
 	apiai.on('response',(response)=>{
 		//logic for getting a response from dialogflow
 		console.log(response.result);
-		var currentLocation,distance = Number.MAX_VALUE,shortestCity,distanceArr=[];
+		var currentLocation,distance = Number.MAX_VALUE,shortestCity,distanceArr={};
 		let aitext = response.result.fulfillment.speech;
 		if(response.result.parameters['geo-city'] !== undefined && response.result.parameters['geo-city'] !== ''){
 			console.log("got the geocity");
@@ -80,7 +80,7 @@ function sendMessage(event){
 		      method: 'POST',
 		      json: {
 		        recipient: {id: sender},
-		        message: {text: 'got the geocity'}
+		        message: {text: 'One moment please...'}
 		      }
 		    }, (error, response) => {
 		      if (error) {
@@ -89,25 +89,53 @@ function sendMessage(event){
 		          console.log('Error: ', response.body.error);
 		      }
 		    });
+		    console.log(data.Kolkata['link']);
 		    for (var variable in data){
-		    	console.log(variable);
 		    	gDistance.get(
 				  {
 				    origin: currentLocation,
 				    destination: variable
 				  },
 				  function(err, resp) {
-				    if (err) return console.log(err);
-				    // if(distance>resp.distanceValue/1000){
-				    // 	distance = resp.distanceValue/1000;
-				    // 	shortestCity = variable;
-				    // }
-				    console.log(resp.distanceValue/1000);
+				    if (err) return console.log('err');
+				    else{
+				    	distanceArr[resp.destination.split(',')[0]] = resp.distanceValue/1000;
+				    	console.log(resp.destination.split(',')[0],resp.distanceValue/1000);
+				    }
 				});
 
 				
 
 		    }
+		    sleep(3000).then(() => {
+			    console.log(distanceArr);
+			    for (var i in distanceArr){
+				if(distance > distanceArr[i]){
+					distance = distanceArr[i];
+					shortestCity = i;
+
+				}
+				
+			}
+			var lshort=data[shortestCity];
+			var city = "The nearest Dev Circle is "+shortestCity+'. Here is the page link:'+ lshort['link'];
+			request({
+		      url: 'https://graph.facebook.com/v2.10/me/messages',
+		      qs: {access_token: PAGE_ACCESS_TOKEN},
+		      method: 'POST',
+		      json: {
+		        recipient: {id: sender},
+		        message: {text: city}
+		      }
+		    }, (error, response) => {
+		      if (error) {
+		          console.log('Error sending message: ', error);
+		      } else if (response.body.error) {
+		          console.log('Error: ', response.body.error);
+		      }
+		    });
+			});
+			
 
 
 		}
