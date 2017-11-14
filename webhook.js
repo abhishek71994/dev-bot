@@ -6,6 +6,7 @@ const app = express();
 const request = require('request');
 const PAGE_ACCESS_TOKEN = 'EAABzUcPPHf8BAMbZBQPT7H58h2huREPLMzrMd6GvT2ktChTKWXxQWZAGKtXVKzbU1QLpK2Fwt7BJaXg7KQk6p14qba0XhKxBZCHKzssMtnj8IjqbGg1hx9KxGmllCaMCrnww227wAQ2gQn3DyOC7FIji8FxiJj5GZAWFWNFl1gZDZD';
 const CLIENT_ACCESS_KEY='5199bb53eb1a448d84d0bd3f2929cf65';
+const PAGE_GRAPH_TOKEN ='EAACEdEose0cBALGGiaT7R1ulOWMKwwyZAMtKeSmdJXFoJeR5d0HHsh1aXXvMoYhDzmrZBqZC2ehK5UjikZBPFdLVzmOMZBN4NPWZAZA43MFlZCwIXqvfFHsZCZBheHMc5ohDaYvZAhiQcfL6ZAc62J2fniQaHgZBS0XUJ7AiyOdDLaLlt4DzVaFhAEiXYqFpxO52YGkGNkbkbkCV7UwZDZD';
 const dflow= require('apiai')('5199bb53eb1a448d84d0bd3f2929cf65');
 var gDistance = require('google-distance');
 var data= require('./data');
@@ -71,109 +72,128 @@ function sendMessage(event){
 		console.log(response.result);
 		var currentLocation,distance = Number.MAX_VALUE,shortestCity,distanceArr={};
 		let aitext = response.result.fulfillment.speech;
-		if(response.result.parameters['geo-city'] !== undefined && response.result.parameters['geo-city'] !== ''){
-			console.log("got the geocity");
-			currentLocation = response.result.parameters['geo-city'];
-			request({
-		      url: 'https://graph.facebook.com/v2.10/me/messages',
-		      qs: {access_token: PAGE_ACCESS_TOKEN},
-		      method: 'POST',
-		      json: {
-		        recipient: {id: sender},
-		        message: {text: 'One moment please...'}
-		      }
-		    }, (error, response) => {
-		      if (error) {
-		          console.log('Error sending message: ', error);
-		      } else if (response.body.error) {
-		          console.log('Error: ', response.body.error);
-		      }
-		    });
-		    console.log(data.Kolkata['link']);
-		    for (var variable in data){
-		    	gDistance.get(
-				  {
-				    origin: currentLocation,
-				    destination: variable
-				  },
-				  function(err, resp) {
-				    if (err) return console.log('err');
-				    else{
-				    	distanceArr[resp.destination.split(',')[0]] = resp.distanceValue/1000;
-				    	console.log(resp.destination.split(',')[0],resp.distanceValue/1000);
-				    }
-				});
-
-				
-
-		    }
-		    sleep(3000).then(() => {
-			    console.log(distanceArr);
-			    for (var i in distanceArr){
-				if(distance > distanceArr[i]){
-					distance = distanceArr[i];
-					shortestCity = i;
-
-				}
-				
-			}
-			var lshort=data[shortestCity];
-			var city = "The nearest Dev Circle is "+shortestCity+'. Here is the page link:'+ lshort['link'];
-			request({
-		      url: 'https://graph.facebook.com/v2.10/me/messages',
-		      qs: {access_token: PAGE_ACCESS_TOKEN},
-		      method: 'POST',
-		      json: {
-		        recipient: {id: sender},
-		        message: {text: city}
-		      }
-		    }, (error, response) => {
-		      if (error) {
-		          console.log('Error sending message: ', error);
-		      } else if (response.body.error) {
-		          console.log('Error: ', response.body.error);
-		      }
-		    });
-			});
-			
-
-
-		}
-		else if(response.result.parameters['geo-country'] !== undefined && (response.result.parameters['geo-city'] === undefined || response.result.parameters['geo-city']==='')){
-			console.log("got the geocountry");
-			request({
-		      url: 'https://graph.facebook.com/v2.10/me/messages',
-		      qs: {access_token: PAGE_ACCESS_TOKEN},
-		      method: 'POST',
-		      json: {
-		        recipient: {id: sender},
-		        message: {text: 'Please enter the city you live in...'}
-		      }
-		    }, (error, response) => {
-		      if (error) {
-		          console.log('Error sending message: ', error);
-		      } else if (response.body.error) {
-		          console.log('Error: ', response.body.error);
-		      }
-		    });
+		//for information and carousel message
+		if(response.result.action === 'INFO'){
+			let infoCity = response.result.parameters['geo-city'];
+			let profile = data[infoCity];
+			let groupId = profile['id'];
+			let requestURL = 'https://graph.facebook.com/v2.10/'+groupId+'/feed';
+			request(requestURL,(err,response,body)=>{
+				if (!err && response.statusCode == 200) {
+		        let json = JSON.parse(body);
+		        console.log(json);
+		      	} 
+		      	else{
+		      		console.log("ERROR in api call");
+		      	}
+		  });
 		}
 		else{
-			request({
-		      url: 'https://graph.facebook.com/v2.10/me/messages',
-		      qs: {access_token: PAGE_ACCESS_TOKEN},
-		      method: 'POST',
-		      json: {
-		        recipient: {id: sender},
-		        message: {text: aitext}
-		      }
-		    }, (error, response) => {
-		      if (error) {
-		          console.log('Error sending message: ', error);
-		      } else if (response.body.error) {
-		          console.log('Error: ', response.body.error);
-		      }
-		    });
+			if(response.result.parameters['geo-city'] !== undefined && response.result.parameters['geo-city'] !== ''){
+				console.log("got the geocity");
+				currentLocation = response.result.parameters['geo-city'];
+				request({
+			      url: 'https://graph.facebook.com/v2.10/me/messages',
+			      qs: {access_token: PAGE_ACCESS_TOKEN},
+			      method: 'POST',
+			      json: {
+			        recipient: {id: sender},
+			        message: {text: 'One moment please...'}
+			      }
+			    }, (error, response) => {
+			      if (error) {
+			          console.log('Error sending message: ', error);
+			      } else if (response.body.error) {
+			          console.log('Error: ', response.body.error);
+			      }
+			    });
+			    for (var variable in data){
+			    	gDistance.get(
+					  {
+					    origin: currentLocation,
+					    destination: variable
+					  },
+					  function(err, resp) {
+					    if (err) return console.log('err');
+					    else{
+					    	distanceArr[resp.destination.split(',')[0]] = resp.distanceValue/1000;
+					    	console.log(resp.destination.split(',')[0],resp.distanceValue/1000);
+					    }
+					});
+
+					
+
+			    }
+			    sleep(3000).then(() => {
+				    console.log(distanceArr);
+				    for (var i in distanceArr){
+					if(distance > distanceArr[i]){
+						distance = distanceArr[i];
+						shortestCity = i;
+
+					}
+					
+				}
+				var lshort=data[shortestCity];
+				var city = "The nearest Dev Circle is "+shortestCity+'. Here is the page link:'+ lshort['link'];
+				request({
+			      url: 'https://graph.facebook.com/v2.10/me/messages',
+			      qs: {access_token: PAGE_ACCESS_TOKEN},
+			      method: 'POST',
+			      json: {
+			        recipient: {id: sender},
+			        message: {text: city}
+			      }
+			    }, (error, response) => {
+			      if (error) {
+			          console.log('Error sending message: ', error);
+			      } else if (response.body.error) {
+			          console.log('Error: ', response.body.error);
+			      }
+			    });
+				});
+				
+
+
+			}
+			else if(response.result.parameters['geo-country'] !== undefined && (response.result.parameters['geo-city'] === undefined || response.result.parameters['geo-city']==='')){
+				console.log("got the geocountry");
+				request({
+			      url: 'https://graph.facebook.com/v2.10/me/messages',
+			      qs: {access_token: PAGE_ACCESS_TOKEN},
+			      method: 'POST',
+			      json: {
+			        recipient: {id: sender},
+			        message: {text: 'Please enter the city you live in...'}
+			      }
+			    }, (error, response) => {
+			      if (error) {
+			          console.log('Error sending message: ', error);
+			      } else if (response.body.error) {
+			          console.log('Error: ', response.body.error);
+			      }
+			    });
+			}
+			
+			else{
+				request({
+			      url: 'https://graph.facebook.com/v2.10/me/messages',
+			      qs: {access_token: PAGE_ACCESS_TOKEN},
+			      method: 'POST',
+			      json: {
+			        recipient: {id: sender},
+			        message: {text: aitext}
+			      }
+			    }, (error, response) => {
+			      if (error) {
+			          console.log('Error sending message: ', error);
+			      } else if (response.body.error) {
+			          console.log('Error: ', response.body.error);
+			      }
+			    });
+			}
 		}
+		
 
 	});
 
