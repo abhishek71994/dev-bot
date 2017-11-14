@@ -6,7 +6,7 @@ const app = express();
 const request = require('request');
 const PAGE_ACCESS_TOKEN = 'EAABzUcPPHf8BAMbZBQPT7H58h2huREPLMzrMd6GvT2ktChTKWXxQWZAGKtXVKzbU1QLpK2Fwt7BJaXg7KQk6p14qba0XhKxBZCHKzssMtnj8IjqbGg1hx9KxGmllCaMCrnww227wAQ2gQn3DyOC7FIji8FxiJj5GZAWFWNFl1gZDZD';
 const CLIENT_ACCESS_KEY='5199bb53eb1a448d84d0bd3f2929cf65';
-const PAGE_GRAPH_TOKEN ='EAACEdEose0cBALGGiaT7R1ulOWMKwwyZAMtKeSmdJXFoJeR5d0HHsh1aXXvMoYhDzmrZBqZC2ehK5UjikZBPFdLVzmOMZBN4NPWZAZA43MFlZCwIXqvfFHsZCZBheHMc5ohDaYvZAhiQcfL6ZAc62J2fniQaHgZBS0XUJ7AiyOdDLaLlt4DzVaFhAEiXYqFpxO52YGkGNkbkbkCV7UwZDZD';
+const PAGE_GRAPH_TOKEN ='126795014675967|Q5WFJ6-MgS1fo-vD_nSqNJbwcpA';
 const dflow= require('apiai')('5199bb53eb1a448d84d0bd3f2929cf65');
 var gDistance = require('google-distance');
 var data= require('./data');
@@ -79,10 +79,86 @@ function sendMessage(event){
 			let profile = data[infoCity];
 			let groupId = profile['id'];
 			let requestURL = 'https://graph.facebook.com/v2.10/'+groupId+'/feed';
+			var posts={};
 			graph.setAccessToken(PAGE_GRAPH_TOKEN);
+			//run this in a separate script
+			graph.extendAccessToken({
+		        "client_id":126795014675967, 
+		        "client_secret":'ea5f67afe7081459425cdfd301751a72'
+		    }, function (err, facebookRes) {
+		       console.log('extended token ',facebookRes);
+		    });
 			graph.get(requestURL, function(err, res) {
-			  console.log(res);
+			  posts = res;
+			  //making the carousel message
+			request({
+			      url: 'https://graph.facebook.com/v2.10/me/messages',
+			      qs: {access_token: PAGE_ACCESS_TOKEN},
+			      method: 'POST',
+			      json: {
+			        "recipient":{
+					    "id":sender
+					  },
+					  "message":{
+					    "attachment":{
+					      "type":"template",
+					      "payload":{
+					        "template_type":"generic",
+					        "elements":[
+					           {
+					            "title":posts.data[0]['story'],
+					            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+					            "subtitle":posts.data[0]['message'],
+					            "buttons":[
+					              {
+					                "type":"web_url",
+					                "url":profile['link'],
+					                "title":"Visit circle"
+					              }             
+					            ]      
+					          },
+					          {
+					            "title":posts.data[1]['story'],
+					            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+					            "subtitle":posts.data[1]['message'],
+					            "buttons":[
+					              {
+					                "type":"web_url",
+					                "url":profile['link'],
+					                "title":"Visit circle"
+					              }             
+					            ]      
+					          },
+					          {
+					            "title":posts.data[2]['story'],
+					            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+					            "subtitle":posts.data[2]['message'],
+					            "buttons":[
+					              {
+					                "type":"web_url",
+					                "url":profile['link'],
+					                "title":"Visit circle"
+					              }             
+					            ]      
+					          }
+					        ]
+					      }
+					    }
+					  }
+			      }
+			    }, (error, response) => {
+			      if (error) {
+			          console.log('Error sending message: ', error);
+			      } else if (response.body.error) {
+			          console.log('Error: ', response.body.error);
+			      }
+			    });
+
+
 			});
+
+			
+
 		}
 		else{
 			if(response.result.parameters['geo-city'] !== undefined && response.result.parameters['geo-city'] !== ''){
@@ -198,8 +274,3 @@ function sendMessage(event){
 	});
 	apiai.end();
 }
-
-
-
-
-
