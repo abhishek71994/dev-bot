@@ -10,6 +10,7 @@ const PAGE_GRAPH_TOKEN ='EAACEdEose0cBALGGiaT7R1ulOWMKwwyZAMtKeSmdJXFoJeR5d0HHsh
 const dflow= require('apiai')('5199bb53eb1a448d84d0bd3f2929cf65');
 var gDistance = require('google-distance');
 var data= require('./data');
+var graph = require('fbgraph');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
 
@@ -78,15 +79,10 @@ function sendMessage(event){
 			let profile = data[infoCity];
 			let groupId = profile['id'];
 			let requestURL = 'https://graph.facebook.com/v2.10/'+groupId+'/feed';
-			request(requestURL,(err,response,body)=>{
-				if (!err && response.statusCode == 200) {
-		        let json = JSON.parse(body);
-		        console.log(json);
-		      	} 
-		      	else{
-		      		console.log("ERROR in api call");
-		      	}
-		  });
+			graph.setAccessToken(PAGE_GRAPH_TOKEN);
+			graph.get(requestURL, function(err, res) {
+			  console.log(res);
+			});
 		}
 		else{
 			if(response.result.parameters['geo-city'] !== undefined && response.result.parameters['geo-city'] !== ''){
