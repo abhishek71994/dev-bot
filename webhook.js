@@ -248,22 +248,47 @@ function sendMessage(event){
 					
 				}
 				var lshort=data[shortestCity];
-				var city = "The nearest Dev Circle is "+shortestCity+'. Here is the page link:'+ lshort['link'];
-				request({
-			      url: 'https://graph.facebook.com/v2.10/me/messages',
-			      qs: {access_token: PAGE_ACCESS_TOKEN},
-			      method: 'POST',
-			      json: {
-			        recipient: {id: sender},
-			        message: {text: city}
-			      }
-			    }, (error, response) => {
-			      if (error) {
-			          console.log('Error sending message: ', error);
-			      } else if (response.body.error) {
-			          console.log('Error: ', response.body.error);
-			      }
-			    });
+				//for existing dev cities
+				if (distance === 0) {
+					var zeroCity = 'A developer circle already exists in your city. Here is the page ink:'+ lshort['link'];
+					request({
+				      url: 'https://graph.facebook.com/v2.10/me/messages',
+				      qs: {access_token: PAGE_ACCESS_TOKEN},
+				      method: 'POST',
+				      json: {
+				        recipient: {id: sender},
+				        message: {text: zeroCity}
+				      }
+				    }, (error, response) => {
+				      if (error) {
+				          console.log('Error sending message: ', error);
+				      } else if (response.body.error) {
+				          console.log('Error: ', response.body.error);
+				      }
+				    });
+				}
+				//for non-existing dev cities
+				else{
+					var city = "The nearest Dev Circle is "+shortestCity+'. Here is the page link:'+ lshort['link'];
+					request({
+				      url: 'https://graph.facebook.com/v2.10/me/messages',
+				      qs: {access_token: PAGE_ACCESS_TOKEN},
+				      method: 'POST',
+				      json: {
+				        recipient: {id: sender},
+				        message: {text: city}
+				      }
+				    }, (error, response) => {
+				      if (error) {
+				          console.log('Error sending message: ', error);
+				      } else if (response.body.error) {
+				          console.log('Error: ', response.body.error);
+				      }
+				    });
+				}
+				
+				
+				
 				});
 				
 
