@@ -93,70 +93,90 @@ function sendMessage(event){
 							let groupId = profile['id'];
 							let requestURL = 'https://graph.facebook.com/v2.10/'+groupId+'/feed';
 							graph.get(requestURL, function(err, res) {
-			  				posts = res;
-							//making the carousel message
-							request({
-							      url: 'https://graph.facebook.com/v2.10/me/messages',
-							      qs: {access_token: PAGE_ACCESS_TOKEN},
-							      method: 'POST',
-							      json: {
-							        "recipient":{
-									    "id":sender
-									  },
-									  "message":{
-									    "attachment":{
-									      "type":"template",
-									      "payload":{
-									        "template_type":"generic",
-									        "elements":[
-									           {
-									            "title":posts.data[0]['story'],
-									            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
-									            "subtitle":posts.data[0]['message'],
-									            "buttons":[
-									              {
-									                "type":"web_url",
-									                "url":profile['link'],
-									                "title":"Visit circle"
-									              }             
-									            ]      
-									          },
-									          {
-									            "title":posts.data[1]['story'],
-									            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
-									            "subtitle":posts.data[1]['message'],
-									            "buttons":[
-									              {
-									                "type":"web_url",
-									                "url":profile['link'],
-									                "title":"Visit circle"
-									              }             
-									            ]      
-									          },
-									          {
-									            "title":posts.data[2]['story'],
-									            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
-									            "subtitle":posts.data[2]['message'],
-									            "buttons":[
-									              {
-									                "type":"web_url",
-									                "url":profile['link'],
-									                "title":"Visit circle"
-									              }             
-									            ]      
-									          }
-									        ]
+								if(err){
+									request({
+									      url: 'https://graph.facebook.com/v2.10/me/messages',
+									      qs: {access_token: PAGE_ACCESS_TOKEN},
+									      method: 'POST',
+									      json: {
+									        recipient: {id: sender},
+									        message: {text: 'The city either has a private group, in which case, kindly join it, or there might not be a developer circle in the city. Please Enter your city name to find the nearest developer circle or apply for a new one in your city.'}
 									      }
-									    }
-									  }
-							      }
-							    }, (error, response) => {
-							      if (error) {
-							          console.log('Error sending message: ', error);
-							      } else if (response.body.error) {
-							          console.log('Error: ', response.body.error);
-							      }
-							    });
+									    }, (error, response) => {
+									      if (error) {
+									          console.log('Error sending message: ', error);
+									      } else if (response.body.error) {
+									          console.log('Error: ', response.body.error);
+									      }
+									    });
+								}
+								else{
+									posts = res;
+									//making the carousel message
+									request({
+									      url: 'https://graph.facebook.com/v2.10/me/messages',
+									      qs: {access_token: PAGE_ACCESS_TOKEN},
+									      method: 'POST',
+									      json: {
+									        "recipient":{
+											    "id":sender
+											  },
+											  "message":{
+											    "attachment":{
+											      "type":"template",
+											      "payload":{
+											        "template_type":"generic",
+											        "elements":[
+											           {
+											            "title":posts.data[0]['story'],
+											            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+											            "subtitle":posts.data[0]['message'],
+											            "buttons":[
+											              {
+											                "type":"web_url",
+											                "url":profile['link'],
+											                "title":"Visit circle"
+											              }             
+											            ]      
+											          },
+											          {
+											            "title":posts.data[1]['story'],
+											            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+											            "subtitle":posts.data[1]['message'],
+											            "buttons":[
+											              {
+											                "type":"web_url",
+											                "url":profile['link'],
+											                "title":"Visit circle"
+											              }             
+											            ]      
+											          },
+											          {
+											            "title":posts.data[2]['story'],
+											            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+											            "subtitle":posts.data[2]['message'],
+											            "buttons":[
+											              {
+											                "type":"web_url",
+											                "url":profile['link'],
+											                "title":"Visit circle"
+											              }             
+											            ]      
+											          }
+											        ]
+											      }
+											    }
+											  }
+									      }
+									    }, (error, response) => {
+									      if (error) {
+									          console.log('Error sending message: ', error);
+									      } else if (response.body.error) {
+									          console.log('Error: ', response.body.error);
+									      }
+									    });
+								}
+			  				
 				
 							});
 				}
