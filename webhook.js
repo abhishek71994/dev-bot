@@ -269,7 +269,7 @@ function sendMessage(event){
 				}
 				//for non-existing dev cities
 				else{
-					var city = "The nearest Dev Circle is "+shortestCity+'. Here is the page link:'+ lshort['link'];
+					var city = "The nearest Dev Circle is "+shortestCity+'. Here is the page link:'+ lshort['link'] + '. If you want to apply to start a circle, visit here: https://developers.facebook.com/developercircles/lead/apply/';
 					request({
 				      url: 'https://graph.facebook.com/v2.10/me/messages',
 				      qs: {access_token: PAGE_ACCESS_TOKEN},
