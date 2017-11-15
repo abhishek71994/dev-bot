@@ -75,10 +75,7 @@ function sendMessage(event){
 		let aitext = response.result.fulfillment.speech;
 		//for information and carousel message
 		if(response.result.action === 'INFO'){
-			let infoCity = response.result.parameters['geo-city'];
-			let profile = data[infoCity];
-			let groupId = profile['id'];
-			let requestURL = 'https://graph.facebook.com/v2.10/'+groupId+'/feed';
+			
 			var posts={};
 			graph.setAccessToken(PAGE_GRAPH_TOKEN);
 			//run this in a separate script
@@ -88,74 +85,98 @@ function sendMessage(event){
 		    }, function (err, facebookRes) {
 		       console.log('extended token ',facebookRes);
 		    });
-			graph.get(requestURL, function(err, res) {
-			  posts = res;
-			  //making the carousel message
-			request({
-			      url: 'https://graph.facebook.com/v2.10/me/messages',
-			      qs: {access_token: PAGE_ACCESS_TOKEN},
-			      method: 'POST',
-			      json: {
-			        "recipient":{
-					    "id":sender
-					  },
-					  "message":{
-					    "attachment":{
-					      "type":"template",
-					      "payload":{
-					        "template_type":"generic",
-					        "elements":[
-					           {
-					            "title":posts.data[0]['story'],
-					            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
-					            "subtitle":posts.data[0]['message'],
-					            "buttons":[
-					              {
-					                "type":"web_url",
-					                "url":profile['link'],
-					                "title":"Visit circle"
-					              }             
-					            ]      
-					          },
-					          {
-					            "title":posts.data[1]['story'],
-					            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
-					            "subtitle":posts.data[1]['message'],
-					            "buttons":[
-					              {
-					                "type":"web_url",
-					                "url":profile['link'],
-					                "title":"Visit circle"
-					              }             
-					            ]      
-					          },
-					          {
-					            "title":posts.data[2]['story'],
-					            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
-					            "subtitle":posts.data[2]['message'],
-					            "buttons":[
-					              {
-					                "type":"web_url",
-					                "url":profile['link'],
-					                "title":"Visit circle"
-					              }             
-					            ]      
-					          }
-					        ]
-					      }
-					    }
-					  }
-			      }
-			    }, (error, response) => {
-			      if (error) {
-			          console.log('Error sending message: ', error);
-			      } else if (response.body.error) {
-			          console.log('Error: ', response.body.error);
-			      }
-			    });
-
-
-			});
+			
+			
+				if(response.result.parameters['geo-city'] !== '' && response.result.parameters['geo-city'] !== undefined){
+							let infoCity = response.result.parameters['geo-city'];
+							let profile = data[infoCity];
+							let groupId = profile['id'];
+							let requestURL = 'https://graph.facebook.com/v2.10/'+groupId+'/feed';
+							graph.get(requestURL, function(err, res) {
+			  				posts = res;
+							//making the carousel message
+							request({
+							      url: 'https://graph.facebook.com/v2.10/me/messages',
+							      qs: {access_token: PAGE_ACCESS_TOKEN},
+							      method: 'POST',
+							      json: {
+							        "recipient":{
+									    "id":sender
+									  },
+									  "message":{
+									    "attachment":{
+									      "type":"template",
+									      "payload":{
+									        "template_type":"generic",
+									        "elements":[
+									           {
+									            "title":posts.data[0]['story'],
+									            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+									            "subtitle":posts.data[0]['message'],
+									            "buttons":[
+									              {
+									                "type":"web_url",
+									                "url":profile['link'],
+									                "title":"Visit circle"
+									              }             
+									            ]      
+									          },
+									          {
+									            "title":posts.data[1]['story'],
+									            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+									            "subtitle":posts.data[1]['message'],
+									            "buttons":[
+									              {
+									                "type":"web_url",
+									                "url":profile['link'],
+									                "title":"Visit circle"
+									              }             
+									            ]      
+									          },
+									          {
+									            "title":posts.data[2]['story'],
+									            "image_url":"https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/BhqIEprNoBN.png",
+									            "subtitle":posts.data[2]['message'],
+									            "buttons":[
+									              {
+									                "type":"web_url",
+									                "url":profile['link'],
+									                "title":"Visit circle"
+									              }             
+									            ]      
+									          }
+									        ]
+									      }
+									    }
+									  }
+							      }
+							    }, (error, response) => {
+							      if (error) {
+							          console.log('Error sending message: ', error);
+							      } else if (response.body.error) {
+							          console.log('Error: ', response.body.error);
+							      }
+							    });
+				
+							});
+				}
+				else{
+					request({
+				      url: 'https://graph.facebook.com/v2.10/me/messages',
+				      qs: {access_token: PAGE_ACCESS_TOKEN},
+				      method: 'POST',
+				      json: {
+				        recipient: {id: sender},
+				        message: {text: aitext}
+				      }
+				    }, (error, response) => {
+				      if (error) {
+				          console.log('Error sending message: ', error);
+				      } else if (response.body.error) {
+				          console.log('Error: ', response.body.error);
+				      }
+				    });
+				}
 
 			
 
