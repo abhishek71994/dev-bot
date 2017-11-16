@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/abhishek71994/dev-bot#readme",
   "dependencies": {
-    "apiai": "^4.0.3",
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2",
-    "fbgraph": "^1.4.1",
-    "google-distance": "^1.0.1",
-    "request": "^2.83.0"
+    "apiai": "4.0.3",
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "fbgraph": "1.4.1",
+    "google-distance": "1.0.1",
+    "request": "2.83.0"
   }
 }
