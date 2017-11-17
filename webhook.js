@@ -16,6 +16,10 @@ const server = app.listen(process.env.PORT || 5000, ()=>{
 	console.log("The server is running on %d in %s mode.",server.address().port, app.settings.env);
 });
 
+//privacy statement
+	app.get('/privacy',(req,res)=>{
+		res.sendFile('privacy/index.html', {root: __dirname });
+	})
 
 //get request for setting up webhook and Facebook functionality
 	app.get('/webhook',(req,res)=>{
