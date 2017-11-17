@@ -258,7 +258,7 @@ function sendMessage(event){
 				var lshort=data[shortestCity];
 				//for existing dev cities
 				if (distance === 0) {
-					var zeroCity = 'A developer circle already exists in your city. Here is the page ink:'+ lshort['link'];
+					var zeroCity = 'A developer circle already exists in your city. Here is the page link:'+ lshort['link'];
 					request({
 				      url: 'https://graph.facebook.com/v2.10/me/messages',
 				      qs: {access_token: keys.PAGE_ACCESS_TOKEN},
