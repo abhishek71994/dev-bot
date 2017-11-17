@@ -35,11 +35,9 @@ const server = app.listen(process.env.PORT || 5000, ()=>{
 	});
 //Handling the messages done in post
 	app.post('/webhook',(req,res)=>{
-		console.log(req.body);
 		if(req.body.object==='page'){
 			req.body.entry.forEach((entry)=>{
 				entry.messaging.forEach((event)=>{
-						console.log(event);
 					if(event.message && event.message.text){
 						sendMessage(event);
 					}
@@ -75,13 +73,6 @@ function sendMessage(event){
 			
 			var posts={};
 			graph.setAccessToken(keys.PAGE_GRAPH_TOKEN);
-			//run this in a separate script
-			graph.extendAccessToken({
-		        "client_id":126795014675967, 
-		        "client_secret":'ea5f67afe7081459425cdfd301751a72'
-		    }, function (err, facebookRes) {
-		       console.log('extended token ',facebookRes);
-		    });
 			
 			
 				if(response.result.parameters['geo-city'] !== '' && response.result.parameters['geo-city'] !== undefined){
@@ -218,7 +209,6 @@ function sendMessage(event){
 		}
 		else{
 			if(response.result.parameters['geo-city'] !== undefined && response.result.parameters['geo-city'] !== ''){
-				console.log("got the geocity");
 				currentLocation = response.result.parameters['geo-city'];
 				request({
 			      url: 'https://graph.facebook.com/v2.10/me/messages',
@@ -245,7 +235,6 @@ function sendMessage(event){
 					    if (err) return console.log('err');
 					    else{
 					    	distanceArr[resp.destination.split(',')[0]] = resp.distanceValue/1000;
-					    	console.log(resp.destination.split(',')[0],resp.distanceValue/1000);
 					    }
 					});
 
@@ -310,7 +299,7 @@ function sendMessage(event){
 
 			}
 			else if(response.result.parameters['geo-country'] !== undefined && (response.result.parameters['geo-city'] === undefined || response.result.parameters['geo-city']==='')){
-				console.log("got the geocountry");
+				
 				request({
 			      url: 'https://graph.facebook.com/v2.10/me/messages',
 			      qs: {access_token: keys.PAGE_ACCESS_TOKEN},
