@@ -269,21 +269,7 @@ function sendMessage(event){
 				      }
 				    }, (error, response) => {
 				      if (error) {
-				          request({
-						      url: 'https://graph.facebook.com/v2.10/me/messages',
-						      qs: {access_token: keys.PAGE_ACCESS_TOKEN},
-						      method: 'POST',
-						      json: {
-						        recipient: {id: sender},
-						        message: {text: "Sorry but due to problems in the google matrix api, I'm not able to calculate the distances  :(  . Please visit https://developers.facebook.com/developercircles to find out more information."}
-						      }
-						    }, (error, response) => {
-						      if (error) {
-						          console.log('Error sending message: ', error);
-						      } else if (response.body.error) {
-						          console.log('Error: ', response.body.error);
-						      }
-						    });
+				      	console.log('Error sending message: ', error);
 				      } else if (response.body.error) {
 				          console.log('Error: ', response.body.error);
 				      }
@@ -302,21 +288,7 @@ function sendMessage(event){
 				      }
 				    }, (error, response) => {
 				      if (error) {
-				          request({
-						      url: 'https://graph.facebook.com/v2.10/me/messages',
-						      qs: {access_token: keys.PAGE_ACCESS_TOKEN},
-						      method: 'POST',
-						      json: {
-						        recipient: {id: sender},
-						        message: {text: "Sorry but due to problems in the google matrix api, I'm not able to calculate the distances  :(  . Please visit https://developers.facebook.com/developercircles to find out more information."}
-						      }
-						    }, (error, response) => {
-						      if (error) {
-						          console.log('Error sending message: ', error);
-						      } else if (response.body.error) {
-						          console.log('Error: ', response.body.error);
-						      }
-						    });
+				          console.log('Error sending message: ', error);
 				      } else if (response.body.error) {
 				          console.log('Error: ', response.body.error);
 				      }
