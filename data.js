@@ -17,7 +17,7 @@ module.exports={
 	'Islamabad':{'id':276495526134954, 'link':'https://www.facebook.com/groups/DevCIslamabad/'},
 	'Karachi':{'id':793016410839401, 'link':'https://www.facebook.com/groups/DevCKarachi/'},
 	'Ho Chi Minh City':{'id':854314664699156, 'link':'https://www.facebook.com/groups/DevCHoChiMinhCity/'},
-	'KualaLumpur':{'id':332808160505895, 'link':'https://www.facebook.com/groups/DevCKualaLumpur/'},
+	'Kuala Lumpur':{'id':332808160505895, 'link':'https://www.facebook.com/groups/DevCKualaLumpur/'},
 	'Bandung':{'id':402137910152010, 'link':'https://www.facebook.com/groups/DevCBandung/'},
 	'Taipei':{'id':813879575430133, 'link':'https://www.facebook.com/groups/DevCTaipei/'},
 	'Manila':{'id':638854212931776, 'link':'https://www.facebook.com/groups/DevCManila/'},
