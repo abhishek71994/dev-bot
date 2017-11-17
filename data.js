@@ -79,7 +79,7 @@ module.exports={
 	'Port-au-Prince':{'id':310319929391744, 'link':'https://www.facebook.com/groups/DevCPort-au-Prince'},
 	'Guadalajara':{'id':826341790867138, 'link':'https://www.facebook.com/groups/DevCGuadalajara/'},
 	'Belo Horizonte':{'id':1415179131904537, 'link':'https://www.facebook.com/groups/DevCBeloHorizonte'},
-	'Mexico':{'id':476463749198108, 'link':'https://www.facebook.com/groups/DevCCiudaddeMexico/'},
+	'Mexico City':{'id':476463749198108, 'link':'https://www.facebook.com/groups/DevCCiudaddeMexico/'},
 	'Santa Rita do Sapucaí':{'id':893652180764182, 'link':'https://www.facebook.com/groups/DevCSantaRitadoSapucai'},
 	'Santa Rita do Sapucai':{'id':893652180764182, 'link':'https://www.facebook.com/groups/DevCSantaRitadoSapucai'},
 	'São Paulo':{'id':886251554842166, 'link':'https://www.facebook.com/groups/DevCSaoPaulo'},

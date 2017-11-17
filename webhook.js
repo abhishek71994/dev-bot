@@ -245,7 +245,7 @@ function sendMessage(event){
 					
 
 			    }
-			    sleep(3000).then(() => {
+			    sleep(5000).then(() => {
 				    console.log(distanceArr);
 				    for (var i in distanceArr){
 					if(distance > distanceArr[i]){
